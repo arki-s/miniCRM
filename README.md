@@ -1,8 +1,9 @@
-# Mini CRM (Backend)
+# Mini CRM Monorepo
 
-![CI](https://github.com/arki-s/mini-crm-api/actions/workflows/ci.yml/badge.svg)
+![API CI](https://github.com/arki-s/mini-crm-api/actions/workflows/api-ci.yml/badge.svg)
 
-A small CRM backend API built with Django REST Framework for learning and practice.
+A minimal monorepo for a CRM product with a Django API today and a planned
+Next.js frontend.
 
 ## Purpose
 
@@ -17,8 +18,8 @@ The focus is not feature completeness, but:
 - Authentication and authorization flow
 - Frontend–backend integration via REST APIs
 
-This repository is intentionally separated from the frontend to mirror
-a real production setup.
+This repository now keeps both application entrypoints in one place so API and
+web can evolve independently while sharing CI and repository settings.
 
 ## Planned Features (MVP)
 
@@ -54,35 +55,50 @@ a real production setup.
 - `PATCH /activities/{id}`
 - `DELETE /activities/{id}`
 
+## Apps
+
+- `apps/api`: Django REST Framework API
+- `apps/web`: reserved for the future Next.js frontend
+
 ## Tech Stack
 
 - Python 3.12+
 - Django
 - Django REST Framework
-- JWT (djangorestframework-simplejwt)
-- PostgreSQL (production / CI)
 - SQLite (local development)
 - Ruff (linting)
-- GitHub Actions (CI)
+- GitHub Actions (API CI today, Web CI later)
 
 ## Project Structure
 
 ```text
 mini-crm-api/
-├── config/          # Django project settings
-├── crm/             # Core CRM app (models, views, serializers)
-├── requirements.txt
-├── pyproject.toml   # Tooling configuration (ruff, etc.)
-└── manage.py
+├── apps/
+│   ├── api/
+│   │   ├── config/          # Django project settings
+│   │   ├── crm/             # Core CRM app (models, views, serializers)
+│   │   ├── manage.py
+│   │   ├── pyproject.toml
+│   │   └── requirements.txt
+│   └── web/                 # Reserved for Next.js
+├── .github/workflows/
+│   └── api-ci.yml
+└── README.md
 ```
 
 ## Development Setup
 
 - python -m venv .venv
 - source .venv/bin/activate
-- pip install -r requirements.txt
+- pip install -r apps/api/requirements.txt
+- cd apps/api
 - python manage.py migrate
 - python manage.py runserver
+
+## CI
+
+- `api-ci.yml` runs only when `apps/api/**` or the API workflow changes
+- Web CI will be added when `apps/web` is scaffolded
 
 ## Status
 
@@ -90,5 +106,5 @@ mini-crm-api/
 
 - Django + DRF project initialized
 - Health check endpoint implemented
-- CI setup (lint + test)
+- API CI split out for the monorepo layout
 - Core models and APIs under development

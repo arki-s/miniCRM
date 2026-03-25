@@ -1,0 +1,7 @@
+.venv/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+apps/api/db.sqlite3
+apps/web/node_modules/
+apps/web/.next/
