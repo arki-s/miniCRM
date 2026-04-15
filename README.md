@@ -88,12 +88,27 @@ mini-crm-api/
 
 ## Development Setup
 
+### 1. Local Python setup
+
 - python -m venv .venv
 - source .venv/bin/activate
 - pip install -r apps/api/requirements.txt
-- cd apps/api
-- python manage.py migrate
-- python manage.py runserver
+
+### 2. Database setup with Docker
+
+- cp .env.example .env
+- make db-up
+
+### 3. Run Django against PostgreSQL
+
+- make migrate
+- make runserver
+
+If you want to stay on SQLite for quick experiments, set `DB_ENGINE=sqlite` in `.env`
+or simply run without loading `.env`.
+
+The default Docker-exposed PostgreSQL port is `5433` so it does not collide with an
+already-running local PostgreSQL on `5432`.
 
 ## CI
 
