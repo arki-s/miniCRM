@@ -3,21 +3,6 @@ from rest_framework import serializers
 from .models import Activity, Deal
 
 
-class DealSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Deal
-        fields = [
-            "id",
-            "deal_name",
-            "client_name",
-            "status",
-            "next_follow_up_at",
-            "created_at",
-            "updated_at",
-        ]
-        read_only_fields = ["id", "created_at", "updated_at"]
-
-
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
@@ -31,6 +16,23 @@ class ActivitySerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
+
+
+class DealSerializer(serializers.ModelSerializer):
+    activities = ActivitySerializer(many=True, read_only=True)
+    class Meta:
+        model = Deal
+        fields = [
+            "id",
+            "deal_name",
+            "client_name",
+            "status",
+            "next_follow_up_at",
+            "created_at",
+            "updated_at",
+            "activities",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at", "activities"]
 
 
 class ActivityCreateSerializer(serializers.ModelSerializer):
