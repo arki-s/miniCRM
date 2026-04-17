@@ -14,6 +14,7 @@ help:
 	@printf "make migrate          Run Django migrations\n"
 	@printf "make makemigrations   Create Django migration files\n"
 	@printf "make runserver        Start Django dev server\n"
+	@printf "make create-superuser Create Django superuser\n"
 
 db-up:
 	docker compose up -d db
@@ -32,3 +33,6 @@ makemigrations:
 
 runserver:
 	set -a; [ -f .env ] && . ./.env; set +a; cd apps/api && $(PYTHON) manage.py runserver
+
+create-superuser:
+	set -a; . .env; set +a; cd apps/api && ../../.venv/bin/python manage.py createsuperuser
