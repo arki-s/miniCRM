@@ -10,6 +10,7 @@ from .serializers import (
     ActivitySerializer,
     DealSerializer,
 )
+from apps.api.crm import models
 
 
 @api_view(["GET"])
@@ -19,8 +20,25 @@ def health(request):
 
 # Deals
 class DealListCreateView(generics.ListCreateAPIView):
-    queryset = Deal.objects.all().order_by("-created_at")
     serializer_class = DealSerializer
+
+    def get_queryset(self):
+        queryset = Deal.objects.all().order_by("-created_at")
+
+        # status フィルタ
+        status_list = self.request.query_params.get("status")
+        if status_list:
+            queryset = queryset.filter(status__in=status_list)
+
+        # q フィルタ（部分一致）
+        q = self.request.query_params.get("q")
+        if q:
+            queryset = queryset.filter(
+                models.Q(deal_name__icontains=q) |
+                models.Q(client_name__icontains=q)
+            )
+
+        return queryset
 
 
 class DealRetrieveUpdateView(generics.RetrieveUpdateAPIView):
