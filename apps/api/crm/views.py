@@ -1,4 +1,5 @@
 # from django.shortcuts import render
+from apps.api.crm import models
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.decorators import api_view
@@ -10,7 +11,6 @@ from .serializers import (
     ActivitySerializer,
     DealSerializer,
 )
-from apps.api.crm import models
 
 
 @api_view(["GET"])
