@@ -1,5 +1,5 @@
 # from django.shortcuts import render
-from apps.api.crm import models
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.decorators import api_view
@@ -34,8 +34,8 @@ class DealListCreateView(generics.ListCreateAPIView):
         q = self.request.query_params.get("q")
         if q:
             queryset = queryset.filter(
-                models.Q(deal_name__icontains=q) |
-                models.Q(client_name__icontains=q)
+                Q(deal_name__icontains=q) |
+                Q(client_name__icontains=q)
             )
 
         return queryset
