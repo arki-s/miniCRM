@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Activity, Deal
 from .serializers import (
@@ -20,6 +21,7 @@ def health(request):
 
 # Deals
 class DealListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = DealSerializer
 
     def get_queryset(self):
@@ -34,20 +36,21 @@ class DealListCreateView(generics.ListCreateAPIView):
         q = self.request.query_params.get("q")
         if q:
             queryset = queryset.filter(
-                Q(deal_name__icontains=q) |
-                Q(client_name__icontains=q)
+                Q(deal_name__icontains=q) | Q(client_name__icontains=q)
             )
 
         return queryset
 
 
 class DealRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = Deal.objects.all()
     serializer_class = DealSerializer
 
 
 # Activities
 class DealActivityListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ActivitySerializer
 
     def get_deal(self) -> Deal:
