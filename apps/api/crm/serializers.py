@@ -20,10 +20,12 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 class DealSerializer(serializers.ModelSerializer):
     activities = ActivitySerializer(many=True, read_only=True)
+
     class Meta:
         model = Deal
         fields = [
             "id",
+            "owner",
             "deal_name",
             "client_name",
             "status",
@@ -32,7 +34,7 @@ class DealSerializer(serializers.ModelSerializer):
             "updated_at",
             "activities",
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "activities"]
+        read_only_fields = ["id", "owner", "created_at", "updated_at", "activities"]
 
 
 class ActivityCreateSerializer(serializers.ModelSerializer):

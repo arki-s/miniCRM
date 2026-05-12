@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -11,6 +12,11 @@ class Deal(models.Model):
         ON_HOLD = "on_hold", "保留"
         NEEDS_FOLLOW_UP = "needs_follow_up", "要フォロー"
 
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="deals",
+        on_delete=models.CASCADE,
+    )
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
     deal_name = models.CharField(max_length=255)
     client_name = models.CharField(max_length=255)

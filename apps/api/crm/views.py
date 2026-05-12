@@ -3,8 +3,8 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from .models import Activity, Deal
 from .serializers import (
@@ -25,7 +25,7 @@ class DealListCreateView(generics.ListCreateAPIView):
     serializer_class = DealSerializer
 
     def get_queryset(self):
-        queryset = Deal.objects.all().order_by("-created_at")
+        queryset = Deal.objects.filter(owner=self.request.user).order_by("-created_at")
 
         # status フィルタ
         status_list = self.request.query_params.get("status")
@@ -41,11 +41,16 @@ class DealListCreateView(generics.ListCreateAPIView):
 
         return queryset
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class DealRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Deal.objects.all()
     serializer_class = DealSerializer
+
+    def get_queryset(self):
+        return Deal.objects.filter(owner=self.request.user)
 
 
 # Activities
@@ -54,7 +59,11 @@ class DealActivityListCreateView(generics.ListCreateAPIView):
     serializer_class = ActivitySerializer
 
     def get_deal(self) -> Deal:
-        return get_object_or_404(Deal, pk=self.kwargs["deal_id"])
+        return get_object_or_404(
+            Deal,
+            pk=self.kwargs["deal_id"],
+            owner=self.request.user,
+        )
 
     def get_queryset(self):
         deal = self.get_deal()
