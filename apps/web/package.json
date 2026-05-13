@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@tanstack/react-query": "^5.100.10",
+    "@tanstack/react-query-devtools": "^5.100.10",
+    "zustand": "^5.0.13"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.13.0"
+  },
+  "scripts": {
+    "generate:api-types": "openapi-typescript ../api/schema.yaml -o src/types/api.ts"
+  }
+}
