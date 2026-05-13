@@ -43,3 +43,7 @@ class ActivityCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = ["date", "activity_type", "memo"]
+
+
+class HealthSerializer(serializers.Serializer):
+    ok = serializers.BooleanField()

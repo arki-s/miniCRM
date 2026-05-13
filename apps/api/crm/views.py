@@ -1,6 +1,7 @@
 # from django.shortcuts import render
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import OpenApiResponse, OpenApiParameter, extend_schema
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
@@ -14,12 +15,36 @@ from .serializers import (
 )
 
 
+@extend_schema(
+    responses={
+        200: OpenApiResponse(
+            description="Health check response",
+        )
+    }
+)
 @api_view(["GET"])
 def health(request):
     return Response({"ok": True})
 
 
 # Deals
+@extend_schema(
+    methods=["GET"],
+    parameters=[
+        OpenApiParameter(
+            name="status",
+            type=str,
+            location=OpenApiParameter.QUERY,
+            description="案件ステータスで絞り込むためのクエリパラメータ。",
+        ),
+        OpenApiParameter(
+            name="q",
+            type=str,
+            location=OpenApiParameter.QUERY,
+            description="案件名または顧客名を部分一致検索するためのクエリパラメータ。",
+        ),
+    ],
+)
 class DealListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = DealSerializer
@@ -28,9 +53,9 @@ class DealListCreateView(generics.ListCreateAPIView):
         queryset = Deal.objects.filter(owner=self.request.user).order_by("-created_at")
 
         # status フィルタ
-        status_list = self.request.query_params.get("status")
-        if status_list:
-            queryset = queryset.filter(status__in=status_list)
+        status = self.request.query_params.get("status")
+        if status:
+            queryset = queryset.filter(status=status)
 
         # q フィルタ（部分一致）
         q = self.request.query_params.get("q")
